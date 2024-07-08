@@ -1,0 +1,48 @@
+nav {
+    background-color: #1a1a1a;
+    height: 70px;
+    display: flex;
+    justify-content: center; /* centers children items horizontally */
+    align-items: center; /* aligns all children items in center vertically */
+    padding: 0 50px 0 50px;
+    position: sticky;
+    /* top: 0; */
+    /* z-index: 100; */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 1.1rem;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    gap: 30px;
+}
+
+nav img {
+    height: 100px;
+    width: auto;
+}
+
+nav a {
+    text-decoration: none;
+    color: #fff;
+    transition: 0.3s ease-in-out;
+}
+
+nav a svg {
+    vertical-align: middle; /* align the icon vertically with the other Navbar links */
+}
+
+nav a:hover {
+    color: var(--col1);
+}
+
+nav button {
+    background-color: #50c878;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    color: white;
+    transition: 0.3s ease-in-out;
+    padding: 8px;
+}

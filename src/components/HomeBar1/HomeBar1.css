@@ -1,0 +1,81 @@
+.trackers {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 10px;
+}
+
+.trackers .card {
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+} 
+
+/* Apply these 3 gradients to the cards and then repeat if there are more than 3 progress items */ 
+.trackers .card:nth-child(3n+1) { 
+    background: linear-gradient(to left, #6FB1FC, #4364F7, #0052D4);
+}
+
+.trackers .card:nth-child(3n+2) {
+    background: linear-gradient(to left, #96c93d, #00b09b);
+}
+
+.trackers .card:nth-child(3n+3) {
+    background: linear-gradient(to right, #E65100, #FFA726);
+}
+
+.trackers .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.trackers .card-header-section {
+    display: flex;
+    flex-direction: column;
+    min-width: 49%;
+    background-color: white;
+    aspect-ratio: 1/1; /* sets width and height to be the same, can also manually set these values */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.trackers .card-header-name {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.trackers .card-header-value {
+    font-size: 14px;
+    color: #333;
+}
+
+.trackers .card button {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 15px;
+    outline: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+    padding: 5px 10px;
+}
+
+.trackers .card button:hover {
+    background-color: rgb(33, 33, 33);
+    color: white;
+}
