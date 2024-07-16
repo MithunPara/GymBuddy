@@ -79,7 +79,8 @@ const HomeBar2 = () => {
             routines && routines.map((item: any, index: number) => {
                 return (
                     <SwiperSlide key={index}>
-                        <div className='swiper-slide' style={{backgroundImage: `url(${item.imageUrl})`}}>
+                        <div className='swiper-slide' style={{ backgroundImage: `url(${item.imageUrl})` }}
+                        onClick={() => { window.location.href = `/workouts/${item.type}` }}>
                             <div className='swiper-slide-body'>
                                 <h2>{item.type}</h2>
                                 <span>{item.workoutDuration} minutes</span>
