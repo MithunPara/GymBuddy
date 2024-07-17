@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import Image from 'next/image'
+import './workouts.css'
 
 const page = () => {
     const [workout, setWorkout] = useState<any>(null)
@@ -15,7 +15,7 @@ const page = () => {
                     exercise: 'Flat Barbell Bench Press',
                     demoUrl: 'https://gymvisual.com/img/p/3/3/8/9/5/33895.gif',
                     sets: 3,
-                    reps: 6-8,
+                    reps: '6-8',
                     restPeriod: 120,
                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vel lobortis urna. Duis quis dui sagittis nisi malesuada rutrum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Integer id leo dolor.'
                 },
@@ -23,7 +23,7 @@ const page = () => {
                     exercise: 'Incline Dumbbell Bench Press',
                     demoUrl: 'https://gymvisual.com/img/p/2/0/8/2/3/20823.gif',
                     sets: 2,
-                    reps: 8-10,
+                    reps: '8-10',
                     restPeriod: 120,
                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vel lobortis urna. Duis quis dui sagittis nisi malesuada rutrum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Integer id leo dolor.'
                 },
@@ -31,7 +31,7 @@ const page = () => {
                     exercise: 'Machine Seated Fly',
                     demoUrl: 'https://gymvisual.com/img/p/5/3/3/3/5333.gif',
                     sets: 3,
-                    reps: 6-8,
+                    reps: '6-8',
                     restPeriod: 90,
                     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vel lobortis urna. Duis quis dui sagittis nisi malesuada rutrum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Integer id leo dolor.'
                 }
@@ -45,7 +45,7 @@ const page = () => {
     }, [])
 
   return (
-    <div>
+    <div className='workout'>
         <h1 className='header1'>{workout?.type} Day</h1>
         <div className='workout-exercises'>
             {
@@ -53,12 +53,17 @@ const page = () => {
                     return (
                         // alternate the side of the page the exercises are displayed on 
                         <div className={
-                            index % 2 == 0 ? 'workout-exercise' : 'workout-exercise-reverse' 
+                            index % 2 == 0 ? 'workout-exercise' : 'workout-exercise workout-exercise-reverse' 
                         }>
                             {/* number the exercises */}
                             <h3>{index + 1}</h3> 
                             <div className='workout-exercise-image'>
-                                <Image src={item.demoUrl} alt="Exercise demo" />
+                                <img src={item.demoUrl} alt="Exercise demo" />
+                            </div>
+                            <div className='workout-exercise-details'>
+                                <h2>{item.exercise}</h2>
+                                <span>{item.sets} Sets x {item.reps} reps</span>
+                                <p>{item.description}</p>
                             </div>
                         </div>
                     )
