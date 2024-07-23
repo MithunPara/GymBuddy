@@ -8,6 +8,7 @@
     align-items: center;
     background-size: cover;
     background-position: center;
+    cursor: pointer;
 }
 
 .swiper-slide .swiper-slide-body {

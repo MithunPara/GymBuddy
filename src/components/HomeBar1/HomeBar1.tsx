@@ -74,7 +74,7 @@ const HomeBar1 = () => {
                             <div className='card-header-value'>{item.target} {item.targetUnit}</div>
                         </div>
                     </div>
-                    <CircularProgress color="neutral" determinate size="md" variant="solid" value={(item.value / item.target) * 100}/>
+                    <CircularProgress color="neutral" determinate size="md" variant="solid" value={Math.min((item.value / item.target) * 100, 100)}/>
                     <button>Show More</button>
                 </div>
                 )
