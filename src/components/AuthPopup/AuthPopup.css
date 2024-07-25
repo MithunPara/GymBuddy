@@ -6,5 +6,21 @@
     display: flex;
     justify-content: center;
     align-items: center; 
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.85);
+}
+
+.auth-form {
+    display: flex;
+    align-items: center;
+}
+
+.underlined-text {
+    text-decoration: underline;
+    cursor: pointer;
+    color: #50c878;
+    /* edit font size and weight later */
+}
+
+.underlined-text:hover {
+    color: #3b965a; 
 }
