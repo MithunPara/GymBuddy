@@ -32,13 +32,13 @@ const AuthPopup = () => {
                                 <Input color="success" placeholder="Weight" size="md" variant="outlined" type="number"/>
                             </div>
 
-                            <span>Height</span>
+                            <span className='form-text'>Height</span>
                             <div className="left-right_inputs">
                                 <Input color="success" placeholder="ft" size="md" variant="outlined" type="number"/>
                                 <Input color="success" placeholder="in" size="md" variant="outlined" type="number"/>
                             </div>
 
-                            <Select color="success" placeholder="Gender" size="md">
+                            <Select color="success" placeholder="Gender" variant="outlined" size="md">
                                 <Option value="male">Male</Option>
                                 <Option value="female">Female</Option>
                                 <Option value="non-binary">Non-binary</Option>
@@ -47,7 +47,7 @@ const AuthPopup = () => {
 
                             <button onClick={() => {handleSignUp()}}>Sign Up</button>
                         </form>
-                        <span>Already a member? <span className='underlined-text' onClick={() => {setShowSignUp(false)}}>Login</span></span>
+                        <p>Already a member? <span className='underlined-text' onClick={() => {setShowSignUp(false)}}>Login</span></p>
                     </div>
                 </div>
             ) : (
@@ -62,7 +62,7 @@ const AuthPopup = () => {
                             <Input color="success" placeholder="Password" size="md" variant="outlined" type="password"/>
                             <button onClick={() => {handleLogin()}}>Login</button>
                         </form>
-                        <span>Not a member yet? <span className='underlined-text' onClick={() => {setShowSignUp(true)}}>Sign Up</span></span>
+                        <p>Not a member yet? <span className='underlined-text' onClick={() => {setShowSignUp(true)}}>Sign Up</span></p>
                     </div>
                 </div>
             )
