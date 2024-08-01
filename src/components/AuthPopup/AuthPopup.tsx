@@ -5,9 +5,13 @@ import logo from '@/assets/gymbuddy-logo.png'
 import Input from '@mui/joy/Input';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
+import { IoMdExit } from "react-icons/io";
 
+interface AuthPopupProps {
+    setLoginPopup: React.Dispatch<React.SetStateAction<boolean>>; // type for the state setter function prop
+}
 
-const AuthPopup = () => {
+const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
     const [showSignUp, setShowSignUp] = useState<boolean>(false)
 
     const handleLogin = () => {}
@@ -22,6 +26,7 @@ const AuthPopup = () => {
                         <Image src={logo} alt="App logo"/>
                     </div>
                     <div className='signup-details'>
+                        <button className='close-button' onClick={() => {setLoginPopup(false)}}><IoMdExit/></button>
                         <h1>Sign Up</h1>
                         <form>
                             <Input color="success" placeholder="Email" size="md" variant="outlined"/>
@@ -56,6 +61,7 @@ const AuthPopup = () => {
                         <Image src={logo} alt="App logo"/>
                     </div>
                     <div className='signup-details'>
+                        <button className='close-button' onClick={() => {setLoginPopup(false)}}><IoMdExit/></button>
                         <h1>Login</h1>
                         <form>
                             <Input color="success" placeholder="Email" size="md" variant="outlined"/>
