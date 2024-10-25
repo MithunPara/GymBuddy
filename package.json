@@ -9,13 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5",
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
     "@fontsource/inter": "^5.0.18",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@meinefinsternis/react-horizontal-date-picker": "^1.0.1",
     "@mui/joy": "^5.0.0-beta.36",
+    "@mui/material": "^5.16.6",
+    "@mui/x-charts": "^7.11.1",
     "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",

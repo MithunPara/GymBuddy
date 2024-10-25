@@ -75,7 +75,9 @@ const HomeBar1 = () => {
                         </div>
                     </div>
                     <CircularProgress color="neutral" determinate size="md" variant="solid" value={Math.min((item.value / item.target) * 100, 100)}/>
-                    <button>Show More</button>
+                    <button onClick={() => {
+                      window.location.href = `/details/${item.name}`
+                    }}>Show More</button>
                 </div>
                 )
             })
