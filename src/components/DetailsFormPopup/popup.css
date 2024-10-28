@@ -1,0 +1,84 @@
+.popup {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 200;
+}
+
+.popup-form {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 60%;
+    width: 600px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: white;
+    overflow: scroll;
+}
+
+.clock-style {
+    border: 1px solid rgb(187, 186, 186);
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.break-line {
+    height: 1px;
+    width: 100%;
+    background-color: #007500;
+    margin-top: 10px;
+}
+
+.daily-food-items {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.daily-food-items .food-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.daily-food-items .food-item h3 {
+    font-size: 15px;
+    font-weight: 500;
+    width: 100%;
+}
+
+.daily-food-items .food-item button {
+    background-color: #007500;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close {
+    background-color: black;
+    color: var(--col1);
+    height: 40px;
+    width: 40px;
+    border: none;
+    border-radius: 50%;
+    font-size: 25px;
+    cursor: pointer;
+    line-height: 0;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transition: 0.3s;
+}
+
