@@ -51,7 +51,11 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
           locale={enCA}
           startValue={date.startValue}
           endValue={date.endValue}
-          // classNames={{ dayLabel: "hello" }}
+          classNames={{ 
+            selectedDay: 'custom-selected',
+            dateLabel: 'custom-date-label',
+            weekendItem: 'custom-weekend-item',
+          }}
         />
 
         <TextField id="outlined-basic" label="Food item" variant="outlined" color="success" />
@@ -61,11 +65,11 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
           <DigitalClock 
             sx={{ // Override some of the styling options of the MUI DigitalClock component (different background colour and add rounded borders)
               '.Mui-selected': {
-                backgroundColor: '#007500',
-                color: 'white',
+                backgroundColor: '#007500 !important', // adding the !important tag ensures that the initial default blue style is overridden
+                color: 'white !important',
                 borderRadius: '5px',
                 '&:focus-visible, &:hover': {
-                  backgroundColor: '#006000',
+                  backgroundColor: '#006000 !important',
                   borderRadius: '5px',
                 },
               },

@@ -82,3 +82,19 @@
     transition: 0.3s;
 }
 
+/* Increasing selector specificity here by adding .popup-form ensures that the datepicker's 
+default color value is overridden without having to use !important tag */
+.popup-form .custom-selected {
+    background-color: #007500;
+}
+
+/* Adding more specific selector here allowed me to override a default blue color on the date 
+label that only appeared for the selected days */
+.popup-form .custom-selected .custom-date-label {
+    background-color: #007500;
+    color: white;
+}
+
+/* .popup-form .custom-weekend-item {
+    color: #007500;
+} */
