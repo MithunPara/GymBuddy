@@ -13,21 +13,22 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { ToastContainer, toast } from 'react-toastify';
+import { sign } from 'crypto';
 
 interface AuthPopupProps {
     setLoginPopup: React.Dispatch<React.SetStateAction<boolean>>; // type for the state setter function prop
 }
 
 interface SignUpFormDetails {
-    name: String | null,
-    email: String | null,
-    password: String | null,
-    weight: Number | null,
-    height: Number | null,
-    gender: String | null,
+    name: string | null,
+    email: string | null,
+    password: string | null,
+    weight: number | null,
+    height: number | null,
+    gender: string | null,
     dob: Date | null,
-    goal: String | null,
-    activityLevel: String | null
+    goal: string | null,
+    activityLevel: string | null
 }
 
 const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
@@ -123,7 +124,9 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
     //     }
     // });
     
-    const handleLogin = () => {}
+    const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+    }
     const handleSignUp = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
     }
@@ -142,28 +145,130 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
                             <button className='close-button' onClick={() => {setLoginPopup(false)}}><IoMdExit/></button>
                         </div>
                         <form>
-                            <Input color="success" placeholder="Email" size="md" variant="outlined"/>
-                            <Input color="success" placeholder="Password" size="md" variant="outlined" type="password"/>
+                            <Input color="success" placeholder="Name" size="md" variant="outlined" 
+                            onChange={(e) => {
+                                setSignUpDetails({
+                                    ...signUpDetails,
+                                    name: e.target.value
+                                });
+                            }}/>
+                            <Input color="success" placeholder="Email" size="md" variant="outlined"
+                            onChange={(e) => {
+                                setSignUpDetails({
+                                    ...signUpDetails,
+                                    email: e.target.value
+                                });
+                            }}/>
+                            <Input color="success" placeholder="Password" size="md" variant="outlined" type="password"
+                            onChange={(e) => {
+                                setSignUpDetails({
+                                    ...signUpDetails,
+                                    password: e.target.value
+                                });
+                            }}/>
                         
                             <div className='left-right_inputs'>
-                                <Input color="success" placeholder="Age" size="md" variant="outlined" type="number"/>
-                                <Input color="success" placeholder="Weight" size="md" variant="outlined" type="number"/>
+                                {/* <Input color="success" placeholder="Age" size="md" variant="outlined" type="number"
+                                 onChange={(e) => {
+                                    setSignUpDetails({
+                                        ...signUpDetails,
+                                        dob: new Date(e.target.value)
+                                    });
+                                }}/> */}
+                                <label htmlFor="">Date of Birth</label>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DesktopDatePicker defaultValue={dayjs(new Date())}
+                                        sx={{
+                                            backgroundColor: 'white',
+                                        }}
+
+                                        onChange={(value) => {
+                                            setSignUpDetails({
+                                                ...signUpDetails,
+                                                dob: new Date(value as any)
+                                            });
+                                        }}
+                                    />
+                                </LocalizationProvider>
+                                <Input color="success" placeholder="Weight" size="md" variant="outlined" type="number"
+                                onChange={(e) => {
+                                    setSignUpDetails({
+                                        ...signUpDetails,
+                                        weight: parseFloat(e.target.value)
+                                    });
+                                }}/>
                             </div>
 
                             <span className='form-text'>Height</span>
                             <div className="left-right_inputs">
-                                <Input color="success" placeholder="ft" size="md" variant="outlined" type="number"/>
-                                <Input color="success" placeholder="in" size="md" variant="outlined" type="number"/>
+                                <Input color="success" placeholder="ft" size="md" variant="outlined" type="number"
+                                onChange={(e) => {
+                                    const feet = parseFloat(e.target.value);
+                                    const currentInches = ((signUpDetails.height ?? 0) % 30.48) / 2.54;
+                                    setSignUpDetails({
+                                        ...signUpDetails,
+                                        height: feet * 30.48 + currentInches * 2.54
+                                    });
+                                }}/>
+                                <Input color="success" placeholder="in" size="md" variant="outlined" type="number"
+                                onChange={(e) => {
+                                    const inches = parseFloat(e.target.value);
+                                    const currentFeet = Math.floor((signUpDetails.height ?? 0) / 30.48);
+                                    setSignUpDetails({
+                                        ...signUpDetails,
+                                        height: currentFeet * 30.48 + inches * 2.54
+                                    });
+                                }}/>
                             </div>
 
-                            <Select color="success" placeholder="Gender" variant="outlined" size="md">
+                            <Select color="success" placeholder="Gender" variant="outlined" size="md"
+                            onChange={(
+                                e: React.SyntheticEvent | null,
+                                selectedValue: string | null
+                            ) => {
+                                setSignUpDetails({
+                                    ...signUpDetails,
+                                    gender: selectedValue?.toString() || '' // if there is a selected value, store it in activity level field, otherwise send empty string (to avoid null error)
+                                });
+                            }}>
                                 <Option value="male">Male</Option>
                                 <Option value="female">Female</Option>
                                 <Option value="non-binary">Non-binary</Option>
                                 <Option value="other">Other</Option>
                             </Select>
 
-                            <button onClick={handleSignUp}>Sign Up</button>
+                            <Select color="success" placeholder="Goal" variant="outlined" size="md"
+                            onChange={(
+                                e: React.SyntheticEvent | null,
+                                selectedValue: string | null
+                            ) => {
+                                setSignUpDetails({
+                                    ...signUpDetails,
+                                    goal: selectedValue?.toString() || '' // if there is a selected value, store it in activity level field, otherwise send empty string (to avoid null error)
+                                });
+                            }}>
+                                <Option value="weight-loss">Lose Weight</Option>
+                                <Option value="maintain">Maintain Weight</Option>
+                                <Option value="weight-gain">Gain Weight</Option>
+                            </Select>
+
+                            <Select color="success" placeholder="Activity Level" variant="outlined" size="md"
+                            onChange={(
+                                e: React.SyntheticEvent | null,
+                                selectedValue: string | null
+                            ) => {
+                                setSignUpDetails({
+                                    ...signUpDetails,
+                                    activityLevel: selectedValue?.toString() || '' // if there is a selected value, store it in activity level field, otherwise send empty string (to avoid null error)
+                                });
+                            }}>
+                                <Option value="sedentary">Sedentary</Option>
+                                <Option value="light">Lightly Active</Option>
+                                <Option value="moderate">Moderately Active</Option>
+                                <Option value="very-active">Very Active</Option>
+                            </Select>
+
+                            <button onClick={(e) => {handleSignUp(e)}}>Sign Up</button>
                         </form>
                         <p>Already a member? <span className='underlined-text' onClick={() => {setShowSignUp(false)}}>Login</span></p>
                     </div>
@@ -181,7 +286,7 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
                         <form>
                             <Input color="success" placeholder="Email" size="md" variant="outlined"/>
                             <Input color="success" placeholder="Password" size="md" variant="outlined" type="password"/>
-                            <button onClick={() => {handleLogin()}}>Login</button>
+                            <button onClick={(e) => {handleLogin(e)}}>Login</button>
                         </form>
                         <p>Not a member yet? <span className='underlined-text' onClick={() => {setShowSignUp(true)}}>Sign Up</span></p>
                     </div>
