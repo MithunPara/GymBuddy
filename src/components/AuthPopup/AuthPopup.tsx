@@ -167,37 +167,57 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
                                 });
                             }}/>
                         
-                            <div className='left-right_inputs'>
-                                {/* <Input color="success" placeholder="Age" size="md" variant="outlined" type="number"
-                                 onChange={(e) => {
-                                    setSignUpDetails({
-                                        ...signUpDetails,
-                                        dob: new Date(e.target.value)
-                                    });
-                                }}/> */}
-                                <label htmlFor="">Date of Birth</label>
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DesktopDatePicker defaultValue={dayjs(new Date())}
-                                        sx={{
-                                            backgroundColor: 'white',
-                                        }}
-
-                                        onChange={(value) => {
-                                            setSignUpDetails({
-                                                ...signUpDetails,
-                                                dob: new Date(value as any)
-                                            });
-                                        }}
-                                    />
-                                </LocalizationProvider>
-                                <Input color="success" placeholder="Weight" size="md" variant="outlined" type="number"
+                            {/* <Input color="success" placeholder="Age" size="md" variant="outlined" type="number"
                                 onChange={(e) => {
-                                    setSignUpDetails({
-                                        ...signUpDetails,
-                                        weight: parseFloat(e.target.value)
-                                    });
-                                }}/>
-                            </div>
+                                setSignUpDetails({
+                                    ...signUpDetails,
+                                    dob: new Date(e.target.value)
+                                });
+                            }}/> */}
+                            {/* <label htmlFor="">Date of Birth</label> */}
+                            <span className='form-text'>Date of Birth</span>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DesktopDatePicker
+                                    defaultValue={dayjs(new Date())}
+                                    onChange={(value) => {
+                                        setSignUpDetails({
+                                            ...signUpDetails,
+                                            dob: new Date(value as any)
+                                        });
+                                    }}
+                                    slotProps={{
+                                        textField: {
+                                            sx: {
+                                                fontFamily: 'var(--joy-fontFamily-body, "Inter", var(--joy-fontFamily-fallback, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"))',
+                                                fontSize: 'var(--joy-fontSize-md, 1rem)',
+                                                '& .MuiInputBase-root': {
+                                                    borderRadius: '5px',
+                                                    backgroundColor: 'white', 
+                                                    color: '#2e7d32', 
+                                                },
+                                                '& .MuiOutlinedInput-notchedOutline': {
+                                                    borderColor: '#2e7d32', 
+                                                },
+                                                '& .Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                                    borderColor: '#2e7d32', 
+                                                },
+                                                '& .MuiInputBase-input': {
+                                                    padding: '10px',  
+                                                },
+                                                '& .MuiFormLabel-root': {
+                                                    color: '#2e7d32', 
+                                                },
+                                                '& .MuiFormLabel-root.Mui-focused': {
+                                                    color: '#2e7d32', 
+                                                },
+                                            },
+                                            color: 'success',
+                                            variant: 'outlined',
+                                            size: 'medium', 
+                                        },
+                                    }}                            
+                                />
+                            </LocalizationProvider>
 
                             <span className='form-text'>Height</span>
                             <div className="left-right_inputs">
@@ -220,6 +240,14 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
                                     });
                                 }}/>
                             </div>
+
+                            <Input color="success" placeholder="Weight" size="md" variant="outlined" type="number"
+                            onChange={(e) => {
+                                setSignUpDetails({
+                                    ...signUpDetails,
+                                    weight: parseFloat(e.target.value)
+                                });
+                            }}/>
 
                             <Select color="success" placeholder="Gender" variant="outlined" size="md"
                             onChange={(
@@ -284,8 +312,20 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
                             <button className='close-button' onClick={() => {setLoginPopup(false)}}><IoMdExit/></button>
                         </div>
                         <form>
-                            <Input color="success" placeholder="Email" size="md" variant="outlined"/>
-                            <Input color="success" placeholder="Password" size="md" variant="outlined" type="password"/>
+                            <Input color="success" placeholder="Email" size="md" variant="outlined"
+                            onChange={(e) => {
+                                setLoginDetails({
+                                    ...loginDetails,
+                                    email: e.target.value
+                                });
+                            }}/>
+                            <Input color="success" placeholder="Password" size="md" variant="outlined" type="password"
+                            onChange={(e) => {
+                                setLoginDetails({
+                                    ...loginDetails,
+                                    password: e.target.value
+                                });
+                            }}/>
                             <button onClick={(e) => {handleLogin(e)}}>Login</button>
                         </form>
                         <p>Not a member yet? <span className='underlined-text' onClick={() => {setShowSignUp(true)}}>Sign Up</span></p>
