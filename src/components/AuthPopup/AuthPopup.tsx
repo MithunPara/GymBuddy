@@ -126,9 +126,11 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
     
     const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        console.log(loginDetails);
     }
     const handleSignUp = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        console.log(signUpDetails);
     }
 
   return (
@@ -191,7 +193,7 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
                                                 fontFamily: 'var(--joy-fontFamily-body, "Inter", var(--joy-fontFamily-fallback, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"))',
                                                 fontSize: 'var(--joy-fontSize-md, 1rem)',
                                                 '& .MuiInputBase-root': {
-                                                    borderRadius: '5px',
+                                                    borderRadius: '7px',
                                                     backgroundColor: 'white', 
                                                     color: '#2e7d32', 
                                                 },
@@ -209,6 +211,9 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
                                                 },
                                                 '& .MuiFormLabel-root.Mui-focused': {
                                                     color: '#2e7d32', 
+                                                },
+                                                '& .MuiButtonBase-root': {
+                                                    color: '#2e7d32',
                                                 },
                                             },
                                             color: 'success',
