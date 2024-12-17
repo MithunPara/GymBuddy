@@ -131,6 +131,27 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
     const handleSignUp = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         console.log(signUpDetails);
+
+        fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(signUpDetails),
+            credentials: 'include'
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+
+                if (data.ok) {
+                    toast.success(data.message);
+                    setShowSignUp(false);
+                } 
+                else {
+                    toast.error(data.message);
+                }
+            }).catch(err => console.log(err));
     }
 
   return (
