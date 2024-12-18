@@ -127,7 +127,30 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
     const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         console.log(loginDetails);
+
+        
+        fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(loginDetails),
+            credentials: 'include' // saves credentials in cookies
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+
+            if (data.ok) {
+                toast.success(data.message);
+                setLoginPopup(false);
+            } 
+            else {
+                toast.error(data.message);
+            }
+        }).catch(err => console.log(err));
     }
+
     const handleSignUp = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         console.log(signUpDetails);
@@ -140,18 +163,18 @@ const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
             body: JSON.stringify(signUpDetails),
             credentials: 'include'
         })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
 
-                if (data.ok) {
-                    toast.success(data.message);
-                    setShowSignUp(false);
-                } 
-                else {
-                    toast.error(data.message);
-                }
-            }).catch(err => console.log(err));
+            if (data.ok) {
+                toast.success(data.message);
+                setShowSignUp(false);
+            } 
+            else {
+                toast.error(data.message);
+            }
+        }).catch(err => console.log(err));
     }
 
   return (
