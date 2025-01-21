@@ -32,7 +32,7 @@ interface SignUpFormDetails {
 }
 
 const AuthPopup: React.FC<AuthPopupProps> = ({ setLoginPopup }) => {
-    const [showSignUp, setShowSignUp] = useState<boolean>(false)
+    const [showSignUp, setShowSignUp] = useState<boolean>(true)
     const [signUpDetails, setSignUpDetails] = useState<SignUpFormDetails>({
         name: '',
         email: '',

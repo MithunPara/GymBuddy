@@ -44,7 +44,7 @@
 .trackers .card-header-section {
     display: flex;
     flex-direction: column;
-    min-width: 49%;
+    width: 49%;
     background-color: white;
     aspect-ratio: 1/1; /* sets width and height to be the same, can also manually set these values */
     align-items: center;
@@ -61,6 +61,16 @@
 .trackers .card-header-value {
     font-size: 14px;
     color: #333;
+    text-align: center;
+}
+
+.trackers .progress-text {
+    color: #333;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .trackers .card button {

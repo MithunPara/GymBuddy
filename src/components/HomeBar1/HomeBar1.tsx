@@ -83,14 +83,16 @@ const HomeBar1 = () => {
                     <div className='card-header'>
                         <div className='card-header-section'>
                             <div className='card-header-name'>{item.name}</div>
-                            <div className='card-header-value'>{parseInt(item.value)} {item.unit}</div>
+                            <div className='card-header-value'>{item.value} {item.unit}</div>
                         </div>
                         <div className='card-header-section'>
                             <div className='card-header-name'>Target</div>
-                            <div className='card-header-value'>{parseInt(item.target)} {item.targetUnit}</div>
+                            <div className='card-header-value'>{item.target} {item.targetUnit}</div>
                         </div>
                     </div>
-                    <CircularProgress color="neutral" determinate size="md" variant="solid" value={Math.min((item.value / item.target) * 100, 100)}/>
+                    <CircularProgress color="neutral" determinate size="lg" variant="solid" value={Math.min((item.value / item.target) * 100, 100)}>
+                      <span className='progress-text'>{(item.value / item.target) * 100} %</span>
+                    </CircularProgress>
                     <button onClick={() => {
                       window.location.href = `/details/${item.name}`
                     }}>Show More</button>
