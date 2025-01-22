@@ -4,8 +4,11 @@ import './DetailsPage.css'
 import CalorieIntakePopup from '@/components/DetailsFormPopup/CalorieIntake/CalorieIntakePopup'
 import { LineChart } from '@mui/x-charts'
 import { FaEdit } from "react-icons/fa";
+import { usePathname } from 'next/navigation'
 
 const page = () => {
+    const pathName = usePathname()
+
     const chartParameters = {
         height: 300,
     }
@@ -173,7 +176,11 @@ const page = () => {
                 />
             }
         </div>
-        <button className='edit-button' onClick={() => {setCalorieIntakePopup(true)}}>
+        <button className='edit-button' onClick={() => {
+            if (decodeURIComponent(pathName) == '/details/Calorie Intake') {
+                setCalorieIntakePopup(true)
+            }
+        }}>
             <FaEdit />
         </button>
 

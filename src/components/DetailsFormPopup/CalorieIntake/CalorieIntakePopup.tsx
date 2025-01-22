@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import '../popup.css'
 import dayjs, { Dayjs } from 'dayjs';
-import { TextField } from '@mui/material';
+import { TextField, Autocomplete, Modal, Box } from '@mui/material';
 import Button from '@mui/material/Button';
 import { Datepicker, DatepickerEvent} from "@meinefinsternis/react-horizontal-date-picker";
 import { enCA } from "date-fns/locale";
@@ -12,6 +12,13 @@ import { DigitalClock } from '@mui/x-date-pickers/DigitalClock';
 
 interface CalorieIntakePopupProps {
   setCalorieIntakePopup: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+interface FoodOption {
+  fdcId: string,
+  description: string,
+  ingredients: string,
+  dataType: string
 }
 
 const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntakePopup }) => {
@@ -34,6 +41,50 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
   });
 
   const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17T15:30'));
+  const [foodOptions, setFoodOptions] = useState<FoodOption[]>([])
+  const [selectedFood, setSelectedFood] = useState<FoodOption | null>(null)
+  const [macronutrients, setMacronutrients] = useState<any>(null);
+  const [showNutrientsPopup, setShowNutrientsPopup] = useState<boolean>(false);
+
+  const fetchFoodOptions = async (query: string) => {
+    if (query.length > 2) {
+      const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/calorieintake/searchfood?query=' + encodeURIComponent(query), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFoodOptions(data.data);
+      } else {
+        console.error('Error fetching food options:', response.statusText);
+      }
+    }
+  }
+
+  const handleOpen = async (food: FoodOption | null) => {
+    setSelectedFood(food);
+    if (food && food.fdcId) {
+      const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/calorieintake/getnutrients?fdcId=' + encodeURIComponent(food.fdcId), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setMacronutrients(data.data);
+        setShowNutrientsPopup(true);
+      } else {
+        console.error('Error fetching nutrient details', response.statusText);
+      }
+    }
+  }
 
   const handleChange = (d: DatepickerEvent) => {
     const [startValue, endValue] = d;
@@ -58,7 +109,24 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
           }}
         />
 
-        <TextField id="outlined-basic" label="Food item" variant="outlined" color="success" />
+        <Autocomplete 
+          freeSolo
+          options={foodOptions}
+          getOptionLabel={(option) => typeof option === 'string' ? option :
+          option.description}
+          onInputChange={(event, newInputValue) => {
+            fetchFoodOptions(newInputValue);
+          }}
+          onChange={(event, newValue) => {
+            if (newValue && typeof newValue !== 'string') {
+              handleOpen(newValue);
+            }
+          }}
+          renderInput={(params) => (
+            <TextField {...params} label="Food item" variant="outlined" color="success" />
+          )}
+        />
+        {/* <TextField id="outlined-basic" label="Food item" variant="outlined" color="success" /> */}
         <TextField id="outlined-basic" label="Food item amount (g)" variant="outlined" color="success" />
 
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -100,6 +168,20 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
           </div>
         </div>
       </div>
+
+      <Modal open={showNutrientsPopup} onClose={() => setShowNutrientsPopup(false)}>
+        <Box sx={{ p: 4, backgroundColor: 'white', borderRadius: '8px', maxWidth: '500px', margin: 'auto', marginTop: '10%' }}>
+          <h3>{selectedFood?.description}</h3>
+          {macronutrients && (
+            <div>
+              <p>Protein: {macronutrients[1].amount}g</p>
+              <p>Carbs: {macronutrients.carbs}g</p>
+              <p>Fat: {macronutrients.fat}g</p>
+            </div>
+          )}
+          <Button onClick={() => setShowNutrientsPopup(false)}>Close</Button>
+        </Box>
+      </Modal>
     </div>
   )
 }
