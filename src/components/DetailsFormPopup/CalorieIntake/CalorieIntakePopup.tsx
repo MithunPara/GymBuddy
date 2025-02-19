@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import '../popup.css'
+import React, { useState, useEffect, useCallback } from 'react'
+import './popup.css'
 import dayjs, { Dayjs } from 'dayjs';
 import { TextField, Autocomplete, Modal, Box } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -9,6 +9,7 @@ import { MdDelete, MdClose } from "react-icons/md";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DigitalClock } from '@mui/x-date-pickers/DigitalClock';
+import macro from 'styled-jsx/macro';
 
 interface CalorieIntakePopupProps {
   setCalorieIntakePopup: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,9 +25,9 @@ interface FoodOption {
 const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntakePopup }) => {
 
   const addDays = (date: any, days: number) => {
-    console.log(date, days, "original date");
+    // console.log(date, days, "original date");
     date.setDate(date.getDate() + days);
-    console.log(date, "new date");
+    // console.log(date, "new date");
     return date;
   }
 
@@ -48,6 +49,9 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
 
   const fetchFoodOptions = async (query: string) => {
     if (query.length > 2) {
+      // Clear the food options state variable to prevent any issues with storing previous search results
+      setFoodOptions([]);
+
       const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/calorieintake/searchfood?query=' + encodeURIComponent(query), {
         method: 'GET',
         headers: {
@@ -62,8 +66,21 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
       } else {
         console.error('Error fetching food options:', response.statusText);
       }
+    } else {
+      setFoodOptions([]);
     }
   }
+
+  // Debounce function, prevents the autocomplete component from displaying previous search results due to rapid input
+  function debounce<T extends (...args: any[]) => void>(func: T, wait: number): (...args: Parameters<T>) => void {
+    let timeout: ReturnType<typeof setTimeout>;
+    return (...args: Parameters<T>) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), wait);
+    };
+  }
+
+  const debouncedFetchFoodOptions = useCallback(debounce(fetchFoodOptions, 300), []);
 
   const handleOpen = async (food: FoodOption | null) => {
     setSelectedFood(food);
@@ -79,6 +96,8 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
       if (response.ok) {
         const data = await response.json();
         setMacronutrients(data.data);
+        console.log(data);
+        console.log(food.fdcId);
         setShowNutrientsPopup(true);
       } else {
         console.error('Error fetching nutrient details', response.statusText);
@@ -90,6 +109,10 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
     const [startValue, endValue] = d;
     setDate((prev) => ({ ...prev, endValue, startValue }));
   };
+
+  // useEffect(() => {
+  //   console.log('Updated food options:', foodOptions)
+  // }, [foodOptions]);
 
   return (
     <div className='popup'>
@@ -114,8 +137,9 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
           options={foodOptions}
           getOptionLabel={(option) => typeof option === 'string' ? option :
           option.description}
+          filterOptions={(x) => x}
           onInputChange={(event, newInputValue) => {
-            fetchFoodOptions(newInputValue);
+            debouncedFetchFoodOptions(newInputValue);
           }}
           onChange={(event, newValue) => {
             if (newValue && typeof newValue !== 'string') {
@@ -171,15 +195,28 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
 
       <Modal open={showNutrientsPopup} onClose={() => setShowNutrientsPopup(false)}>
         <Box sx={{ p: 4, backgroundColor: 'white', borderRadius: '8px', maxWidth: '500px', margin: 'auto', marginTop: '10%' }}>
-          <h3>{selectedFood?.description}</h3>
+          <h3 style={{ marginBottom: '16px' }}>{selectedFood?.description}</h3>
           {macronutrients && (
-            <div>
-              <p>Protein: {macronutrients[1].amount}g</p>
-              <p>Carbs: {macronutrients.carbs}g</p>
-              <p>Fat: {macronutrients.fat}g</p>
+            <div style={{ marginBottom: '16px'}}>
+              <p>Serving: 100g</p>
+              {['Energy', 'Protein', 'Total lipid (fat)', 'Carbohydrate, by difference'].map((nutrientName, index) => {
+                const nutrient = macronutrients.find((n: any) => n.nutrient.name === nutrientName);
+                if (nutrient) {
+                  if (nutrientName === 'Energy') {
+                    return <p key={index}>Calories: {nutrient.amount} cal</p>;
+                  } else if (nutrientName === 'Protein') {
+                    return <p key={index}>Protein: {nutrient.amount}g</p>;
+                  } else if (nutrientName === 'Total lipid (fat)') {
+                    return <p key={index}>Fat: {nutrient.amount}g</p>;
+                  } else if (nutrientName === 'Carbohydrate, by difference') {
+                    return <p key={index}>Carbs: {nutrient.amount}g</p>;
+                  }
+                }
+                return null;
+              })}
             </div>
           )}
-          <Button onClick={() => setShowNutrientsPopup(false)}>Close</Button>
+          <Button variant='outlined' color='success' onClick={() => setShowNutrientsPopup(false)}>Close</Button>
         </Box>
       </Modal>
     </div>
