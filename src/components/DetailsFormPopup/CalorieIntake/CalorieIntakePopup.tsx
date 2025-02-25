@@ -3,12 +3,14 @@ import './popup.css'
 import dayjs, { Dayjs } from 'dayjs';
 import { TextField, Autocomplete, Modal, Box } from '@mui/material';
 import Button from '@mui/material/Button';
-import { Datepicker, DatepickerEvent} from "@meinefinsternis/react-horizontal-date-picker";
+import { Datepicker, DatepickerEvent } from "@meinefinsternis/react-horizontal-date-picker";
 import { enCA } from "date-fns/locale";
 import { MdDelete, MdClose } from "react-icons/md";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DigitalClock } from '@mui/x-date-pickers/DigitalClock';
+import { format } from 'date-fns';
+import { toast } from 'react-toastify';
 import macro from 'styled-jsx/macro';
 
 interface CalorieIntakePopupProps {
@@ -41,11 +43,20 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
     // rangeDates: [],
   });
 
-  const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17T15:30'));
+  const [time, setTime] = useState<any>(dayjs(new Date()));
+  // const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17T15:30'));
   const [foodOptions, setFoodOptions] = useState<FoodOption[]>([])
   const [selectedFood, setSelectedFood] = useState<FoodOption | null>(null)
   const [macronutrients, setMacronutrients] = useState<any>(null);
   const [showNutrientsPopup, setShowNutrientsPopup] = useState<boolean>(false);
+  const [calorieIntake, setCalorieIntake] = useState<any>({
+    item: '',
+    date: '',
+    amount: '',
+    amountType: 'g',
+    fdcId: ''
+  }); 
+  const [items, setItems] = useState<any>([]);
 
   const fetchFoodOptions = async (query: string) => {
     if (query.length > 2) {
@@ -105,11 +116,82 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
     }
   }
 
+  // Currently, this function is set up so only a start date value is stored to allow the user to select a specific date,
+  // if I want to allow the user to select a date range, there should be some code to store the endValue field as well
   const handleChange = (d: DatepickerEvent) => {
-    const [startValue, endValue] = d;
-    setDate((prev) => ({ ...prev, endValue, startValue }));
+    // const [startValue, endValue] = d;
+    // setDate((prev) => ({ ...prev, endValue, startValue }));
+    const [startValue] = d;
+    setDate({ startValue, endValue: null })
   };
 
+  const saveCalorieIntake = async () => {
+      let formattedDate = date.startValue ? format(date.startValue, 'yyyy-MM-dd') : null;
+      let formattedTime = time.format('HH:mm:ss');
+      let formattedDateTime = formattedDate + ' ' + formattedTime;
+      let finalDateTime = new Date(formattedDateTime);
+
+      fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/calorieintake/addcalorieintake', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          item: calorieIntake.item,
+          date: finalDateTime,
+          amount: calorieIntake.amount,
+          amountType: calorieIntake.amountType,
+          fdcId: calorieIntake.fdcId
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          toast.success('Food item has been logged successfully');
+          getCalorieIntake();
+        } else {
+          toast.error('Error logging food item');
+        }
+      })
+      .catch(err => {
+        toast.error('Error logging food item');
+        console.log(err);
+      })
+  }
+
+  const getCalorieIntake = async () => {
+    setItems([]);
+
+    if (date.startValue) {
+      fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/calorieintake/getcalorieintakebydate?date=' + encodeURIComponent(date.startValue.toString()), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.ok) {
+          console.log(data.data)
+          setItems(data.data)
+        } else {
+          toast.error('Error retrieving calorie intake')
+        }
+      })
+      .catch(err => {
+        toast.error('Error retrieving calorie intake')
+        console.log(err);
+      })
+    }
+  }
+  
+  const deleteCalorieIntake = async (item: any) => {}
+
+  useEffect(() => {
+    getCalorieIntake();
+  }, [date.startValue])
   // useEffect(() => {
   //   console.log('Updated food options:', foodOptions)
   // }, [foodOptions]);
@@ -120,6 +202,10 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
         <button className='close' onClick={() => {setCalorieIntakePopup(false)}}>
           <MdClose />
         </button>
+        <label>Select a date:</label>
+        <p>Use the arrows to navigate through the dates and select the date you wish to log for. To select a new date, 
+          deselect the current selected date.
+        </p>
         <Datepicker
           onChange={handleChange}
           locale={enCA}
@@ -144,6 +230,7 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
           onChange={(event, newValue) => {
             if (newValue && typeof newValue !== 'string') {
               handleOpen(newValue);
+              setCalorieIntake({...calorieIntake, item: newValue.description, fdcId: newValue.fdcId});
             }
           }}
           renderInput={(params) => (
@@ -151,7 +238,11 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
           )}
         />
         {/* <TextField id="outlined-basic" label="Food item" variant="outlined" color="success" /> */}
-        <TextField id="outlined-basic" label="Food item amount (g)" variant="outlined" color="success" />
+        <TextField id="outlined-basic" label="Food item amount (g)" variant="outlined" color="success" 
+          onChange={(e) => {
+            setCalorieIntake({...calorieIntake, amount: e.target.value})
+          }}
+        />
 
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DigitalClock 
@@ -165,10 +256,10 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
                   borderRadius: '5px',
                 },
               },
-            }} className='clock-style' value={value} onChange={(newValue) => setValue(newValue)}/>
+            }} className='clock-style' value={time} onChange={(newValue) => setTime(newValue)}/>
         </LocalizationProvider> 
 
-        <Button variant="contained" color="success">
+        <Button variant="contained" color="success" onClick={saveCalorieIntake}>
           Save
         </Button>
 
@@ -190,6 +281,7 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
               <button><MdDelete/></button>
             </div>
           </div>
+          <div style={{ height: '20px' }}></div> {/* Spacer element to ensure spacing between bottom of form and food items */}
         </div>
       </div>
 
