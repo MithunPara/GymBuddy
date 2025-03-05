@@ -187,7 +187,32 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
     }
   }
   
-  const deleteCalorieIntake = async (item: any) => {}
+  const deleteCalorieIntake = async (item: any) => {
+    fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/calorieintake/deletecalorieintake', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        item: item.item,
+        date: item.date
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.ok) {
+        toast.success('Calorie intake item deleted successfully');
+        getCalorieIntake();
+      } else {
+        toast.error('Error deleting calorie intake item')
+      }
+    })
+    .catch(err => {
+      toast.error('Error deleting calorie intake item')
+      console.log(err);
+    })
+  }
 
   useEffect(() => {
     getCalorieIntake();
@@ -264,22 +289,22 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
         </Button>
 
         <div className='break-line'>
+          <h3>Selected date food items:</h3>
           <div className='daily-food-items'>
-            <div className='food-item'>
-              <h3>Chicken Breast</h3>
-              <h3>150 g</h3>
-              <button><MdDelete/></button>
-            </div>
-            <div className='food-item'>
-              <h3>Avocado</h3>
-              <h3>100 g</h3>
-              <button><MdDelete/></button>
-            </div>
-            <div className='food-item'>
-              <h3>White Rice</h3>
-              <h3>110 g</h3>
-              <button><MdDelete/></button>
-            </div>
+            {
+              items.map((item: any) => {
+                return (
+                  <div className='food-item'>
+                    <h3>{item.item}</h3>
+                    <h3>{item.amount} {item.amountType}</h3>
+                    <button 
+                      onClick={() => {
+                        deleteCalorieIntake(item)
+                      }}><MdDelete/></button>
+                  </div>
+                )
+              })
+            }
           </div>
           <div style={{ height: '20px' }}></div> {/* Spacer element to ensure spacing between bottom of form and food items */}
         </div>
@@ -292,9 +317,15 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
             <div style={{ marginBottom: '16px'}}>
               <p>Serving: 100g</p>
               {['Energy', 'Protein', 'Total lipid (fat)', 'Carbohydrate, by difference'].map((nutrientName, index) => {
-                const nutrient = macronutrients.find((n: any) => n.nutrient.name === nutrientName);
+                let nutrient = macronutrients.find((n: any) => n.nutrient.name === nutrientName);
+
+                // If there is no nutrient returned with the label 'Energy', check for another label to retrieve a calorie value
+                if (nutrientName === 'Energy' && !nutrient) {
+                  nutrient = macronutrients.find((n: any) => n.nutrient.name === 'Energy (Atwater Specific Factors)');
+                }
+
                 if (nutrient) {
-                  if (nutrientName === 'Energy') {
+                  if (nutrientName === 'Energy' || nutrientName === 'Energy (Atwater Specific Factors)') {
                     return <p key={index}>Calories: {nutrient.amount} cal</p>;
                   } else if (nutrientName === 'Protein') {
                     return <p key={index}>Protein: {nutrient.amount}g</p>;

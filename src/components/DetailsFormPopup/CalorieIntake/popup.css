@@ -45,11 +45,15 @@
     margin-top: 10px;
 }
 
+.break-line h3 {
+    margin-top: 15px;
+    font-size: 18px;
+}
+
 .daily-food-items {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    margin-top: 15px;
 }
 
 .daily-food-items .food-item {
