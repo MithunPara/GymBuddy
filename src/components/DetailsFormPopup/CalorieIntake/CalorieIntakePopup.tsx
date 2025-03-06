@@ -38,7 +38,7 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
     startValue: Date | null;
     // rangeDates: Date[] | null;
   }>({
-    startValue: new Date(),
+    startValue: addDays(new Date(), -50),
     endValue: addDays(new Date(), 100),
     // rangeDates: [],
   });
@@ -236,6 +236,7 @@ const CalorieIntakePopup: React.FC<CalorieIntakePopupProps> = ({ setCalorieIntak
           locale={enCA}
           startValue={date.startValue}
           endValue={date.endValue}
+          startDate={addDays(new Date(), -50)}
           classNames={{ 
             selectedDay: 'custom-selected',
             dateLabel: 'custom-date-label',
