@@ -32,18 +32,23 @@ const page = () => {
                 if (data.ok) {
                     let intake = data.data.map((item: any) => {
                         return {
-                            date: item.date,
-                            value: item.intake,
-                            unit: 'cal'
+                            date: new Date(item.date),
+                            value: item.value,
+                            unit: item.unit
                         }   
                     })
+
+                    // must sort the intake values by date to ensure that the data points are in chronological order when
+                    // displayed on the MUI line chart, otherwise it will not connect in order
+                    intake.sort((a: any, b: any) => a.date - b.date);
+
                     let chartValues = intake.map((item: any) => {
                         let val = JSON.stringify(item.value) // must convert values to string to display using LineChart component
                         return val
                     })   
 
                     let xAxisData = intake.map((item: any) => {
-                        let val = new Date(item.date)
+                        let val = item.date
                         return val
                     })    
 
