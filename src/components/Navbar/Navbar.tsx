@@ -30,6 +30,23 @@ const Navbar = () => {
     }).catch(err => console.log(err));
   }
 
+  const handleSignOut = async () => {
+    fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/auth/signout', {
+      method: 'POST',
+      credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.ok) {
+        setLoggedIn(false);
+        window.location.reload();
+      }
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  }
+
   useEffect(() => {
     checkLogin();
   }, [loginPopup])
@@ -42,7 +59,7 @@ const Navbar = () => {
         <Link href='/profile'><FaUser/></Link>
         {
           loggedIn ? 
-          <button>Sign Out</button>
+          <button onClick={handleSignOut}>Sign Out</button>
           :
           <button onClick={() => setLoginPopup(true)}>Sign Up</button>
         }
