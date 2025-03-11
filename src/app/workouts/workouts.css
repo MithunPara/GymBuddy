@@ -27,9 +27,10 @@
 }
 
 .workout-exercise-image img {
-    max-width: 100%;
+    /* max-width: 100%; */
     height: auto;
-    min-width: 250px;
+    width: 250px;
+    margin-left: 20px;
 }
 
 .workout-exercise-details {
@@ -69,12 +70,16 @@
 }
 
 .workout-exercise h3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     -webkit-text-stroke: 1px #50c878;
     color: transparent;
     font-size: 8rem;
-    text-align: center;
-    width: 15rem;
-    aspect-ratio: 1/1;
+    /* text-align: center; */
+    width: 12rem;
+    height: 12rem;
+    /* aspect-ratio: 1/1; */
     border: 1px solid #50c878;
     border-radius: 50%;
 }
