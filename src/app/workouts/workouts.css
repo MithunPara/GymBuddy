@@ -20,6 +20,7 @@
     align-items: center;
     margin-top: 30px;
     width: 100%;
+    gap: 20px;
 }
 
 .workout-exercise-reverse {
@@ -30,7 +31,12 @@
     /* max-width: 100%; */
     height: auto;
     width: 250px;
-    margin-left: 20px;
+    /* margin-left: 20px; */
+}
+
+.workout-exercise-reverse .workout-exercise-image img {
+    margin-left: 0;
+    /* margin-right: 20px; */
 }
 
 .workout-exercise-details {
@@ -38,14 +44,16 @@
     flex-direction: column;
     text-align: left;
     gap: 10px;
-    margin-left: 20px;
+    flex-grow: 1;
+    min-width: 0;
+    /* margin-left: 20px; */
 }
 
 .workout-exercise-reverse .workout-exercise-details {
     text-align: right;
     align-items: flex-end;
     margin-left: 0;
-    margin-right: 20px;
+    /* margin-right: 20px; */
 }
 
 .workout-exercise-details h2 {
@@ -75,10 +83,11 @@
     align-items: center;
     -webkit-text-stroke: 1px #50c878;
     color: transparent;
-    font-size: 8rem;
+    font-size: 6rem;
     /* text-align: center; */
-    width: 12rem;
-    height: 12rem;
+    width: 8rem;
+    height: 8rem;
+    flex-shrink: 0;
     /* aspect-ratio: 1/1; */
     border: 1px solid #50c878;
     border-radius: 50%;
